@@ -1,8 +1,9 @@
-# Hermes Scout
+````markdown
+# Hermes Job Assistant (HJA)
 
 An always-on research-career agent. Twice a day it searches job boards, fellowship pages and funding calls for openings that fit your profile, checks each listing on the real page, scores it against your criteria, drafts a tailored cover letter and checklist for the strong matches, and reports to you on Telegram. **It never applies for you**: you decide what to apply to, and you submit it yourself.
 
-It's built on [Hermes Agent](https://hermes-agent.nousresearch.com/) by Nous Research, runs in Docker, and moves between a laptop and a cloud server by copying folders.
+It's built on Hermes Agent by Nous Research, runs in Docker, and moves between a laptop and a cloud server by copying folders.
 
 ---
 
@@ -28,32 +29,32 @@ It's built on [Hermes Agent](https://hermes-agent.nousresearch.com/) by Nous Res
 
 ```mermaid
 flowchart LR
-    subgraph Host["Your machine (laptop or server)"]
-        MAT["~/scout/materials<br/>CV, criteria, sources<br/>(read-only)"]
-        OUT["~/scout/out<br/>drafts, tracker, seen list"]
-        HD["~/.hermes<br/>config, keys, skills,<br/>memory, Claude login"]
-        REPO["this repo<br/>Dockerfile, compose,<br/>prompts, scripts"]
-    end
+subgraph Host["Your machine (laptop or server)"]
+MAT["~/scout/materials CV, criteria, sources (read-only)"]
+OUT["~/scout/out drafts, tracker, seen list"]
+HD["~/.hermes config, keys, skills, memory, Claude login"]
+REPO["this repo Dockerfile, compose, prompts, scripts"]
+end
 
-    subgraph C["Docker container: hermes (uid 10000)"]
-        GW["Hermes gateway<br/>+ cron scheduler"]
-        AG["Agent<br/>(skills: scout-profile,<br/>scout-tracker)"]
-        CC["Claude Code CLI"]
-        BR["Headless Chromium"]
-        FA["fetch_alerts.py"]
-    end
+subgraph C["Docker container: hermes (uid 10000)"]
+GW["Hermes gateway + cron scheduler"]
+AG["Agent (skills: scout-profile, scout-tracker)"]
+CC["Claude Code CLI"]
+BR["Headless Chromium"]
+FA["fetch_alerts.py"]
+end
 
-    MAT --> AG
-    AG --> OUT
-    HD <--> GW
-    REPO --> GW
-    GW --> AG
-    AG --> CC --> CL["Claude<br/>(your subscription)"]
-    AG -->|search| BRAVE["Brave Search API"]
-    AG -->|read pages| TAV["Tavily API"]
-    AG --> BR
-    MAIL[("Alert mailbox<br/>IMAP")] --> FA --> AG
-    GW <--> TG["Telegram bot"]
+MAT --> AG
+AG --> OUT
+HD <--> GW
+REPO --> GW
+GW --> AG
+AG --> CC --> CL["Claude (your subscription)"]
+AG -->|search| BRAVE["Brave Search API"]
+AG -->|read pages| TAV["Tavily API"]
+AG --> BR
+MAIL[("Alert mailbox IMAP")] --> FA --> AG
+GW <--> TG["Telegram bot"]
 ```
 
 | Component | Role |
@@ -97,7 +98,7 @@ The image holds only software. Everything personal lives in those folders, which
 ## Requirements
 
 - Linux with Docker Engine and the Compose plugin (tested on Fedora with SELinux enforcing).
-- A Claude Pro/Max subscription (via the plugin), **or** an Anthropic API key.
+- A Claude Pro/Max subscription (via the plugin), **or** another model provider (see *Changing the model*).
 - Free accounts: Telegram, Brave Search API, Tavily.
 - Optional: a dedicated IMAP mailbox for job alerts (e.g. Posteo).
 - About 4 GB of free RAM.
@@ -116,7 +117,7 @@ Leave the container shell with `exit`.
 
 ### 1. Clone and initialise **[host]**
 ```sh
-git clone <this-repo-url> ~/hermes && cd ~/hermes
+git clone git@github.com:<your-username>/HJA-HermesJobAssistant.git ~/hermes-scout && cd ~/hermes-scout
 bash scripts/init-host.sh
 ```
 This creates `~/.hermes`, `~/scout/materials` and `~/scout/out`, copies the templates, sets permissions for the container user, and writes `.env` with a random dashboard password.
@@ -125,9 +126,9 @@ This creates `~/.hermes`, `~/scout/materials` and `~/scout/out`, copies the temp
 - Put your CV (`.tex` and/or `.pdf`) and any past applications in `~/scout/materials/`. Subfolders are fine.
 - Edit `~/scout/materials/criteria.md` (who you are, topics, roles, locations, exclusions, scoring) and `sources.md` (sites and queries).
 - Re-apply read permissions after adding files:
-  ```sh
-  find ~/scout/materials -type d -exec chmod 755 {} + ; find ~/scout/materials -type f -exec chmod 644 {} +
-  ```
+```sh
+find ~/scout/materials -type d -exec chmod 755 {} + ; find ~/scout/materials -type f -exec chmod 644 {} +
+```
 
 ### 3. Build **[host]**
 ```sh
@@ -149,20 +150,20 @@ docker compose up -d && docker compose logs --tail 40
 With a Claude subscription (experimental plugin; Hermes 0.21.4 or newer):
 ```sh
 hermes --version
-claude auth login                                   # open the link, approve, paste the code
+claude auth login # open the link, approve, paste the code
 hermes plugins install claude-subscription-directsdk
-hermes model                                        # choose "Claude Subscription DirectSDK (Experimental)", then sonnet
+hermes model # choose "Claude Subscription DirectSDK (Experimental)", then sonnet
 ```
-With an API key instead: run `hermes model`, choose Anthropic and paste the key.
+For other providers, see *Changing the model*.
 
 Turn off "extra usage" in your Claude account if you never want to pay beyond the subscription.
 
 ### 7. Keys and settings **[container]**
 See `templates/hermes/hermes.env.example` for the full list.
 ```sh
-echo 'TAVILY_API_KEY=tvly-...'          >> /opt/data/.env
-echo 'BRAVE_SEARCH_API_KEY=...'         >> /opt/data/.env
-echo 'TELEGRAM_BOT_TOKEN=123:ABC...'    >> /opt/data/.env
+echo 'TAVILY_API_KEY=tvly-...' >> /opt/data/.env
+echo 'BRAVE_SEARCH_API_KEY=...' >> /opt/data/.env
+echo 'TELEGRAM_BOT_TOKEN=123:ABC...' >> /opt/data/.env
 echo 'TELEGRAM_ALLOWED_USERS=123456789' >> /opt/data/.env
 hermes config set web.search_backend brave-free
 hermes config set web.extract_backend tavily
@@ -193,7 +194,7 @@ The rubric, thresholds and exclusions must match `criteria.md`.
 ### 10. Scheduled jobs **[container]**
 ```sh
 sh /opt/data/scout-scripts/create-jobs.sh
-hermes cron run <scout-job-id>            # first run now; takes 10–20 min
+hermes cron run <scout-job-id> # first run now; takes 10–20 min
 ```
 Don't restart the container during a run: a restart cancels it (it shows up as `KeyboardInterrupt`).
 
@@ -234,6 +235,37 @@ Drafts are in `~/scout/out/drafts/<slug>/` (`cover_letter.md`, `checklist.md`); 
 
 ---
 
+## Changing the model
+
+Hermes talks to one model at a time, set with `hermes model` **[container]**. Scheduled jobs use the same model, so a change applies to every run. Restart afterwards **[host]**: `docker compose restart`.
+
+| Option | How | Cost |
+|---|---|---|
+| Claude subscription (default) | `hermes model` → *Claude Subscription DirectSDK (Experimental)* → `sonnet`, `opus` or `haiku` | Uses your Pro/Max plan limits |
+| Anthropic API key | `hermes model` → Anthropic → paste the key | Pay per token |
+| Nous Portal | `hermes model` → Nous Portal (or `hermes setup --portal`) | Nous plan or credits |
+| OpenAI / OpenRouter | `hermes model` → choose the provider → paste the key | Pay per token |
+| Local or self-hosted model | Set the `model:` block in `/opt/data/config.yaml` (see below) | Your own hardware |
+
+Self-hosted example (e.g. vLLM or Ollama with an OpenAI-compatible API):
+
+```yaml
+model:
+provider: custom
+model: my-model
+base_url: http://vllm:8000/v1 # use the container or host name, not localhost
+api_key: "none"
+```
+
+Notes:
+- Provider names in the `hermes model` menu may differ slightly from this table; pick the closest match.
+- Sonnet is enough for scouting; Opus writes better cover letters but uses your limits faster.
+- Skills, memory and history are plain files, so they carry over to any model.
+- Weaker models may ignore rules such as "never guess deadlines". After switching, run the scout once and check its report.
+- Remove keys you no longer use from `/opt/data/.env`.
+
+---
+
 ## Operations
 
 | Task | Command |
@@ -243,9 +275,9 @@ Drafts are in `~/scout/out/drafts/<slug>/` (`cover_letter.md`, `checklist.md`); 
 | Stop / start **[host]** | `docker compose stop` · `docker compose start` |
 | Start on boot **[host]** | `sudo systemctl enable docker` (the container has `restart: unless-stopped`) |
 | Update Hermes and Claude Code **[host]** | `docker compose build --pull --no-cache && docker compose up -d` |
-| Back up **[host]** | `sudo tar czf ~/scout-backup-$(date +%F).tgz -C ~ hermes .hermes scout` |
+| Back up **[host]** | `sudo tar czf ~/hja-backup-$(date +%F).tgz -C ~ hermes-scout .hermes scout` |
 
-**Moving to a cloud server:** create a small x86 server (2 vCPU, 4 GB RAM); lock it down (SSH keys only, firewall, automatic updates); install Docker; copy `~/hermes`, `~/.hermes` and `~/scout` with `rsync -a`; run `sudo chown -R 10000:10000 ~/.hermes ~/scout/out`. **Stop Hermes on the old machine before starting it on the new one**, or both will compete for the same Telegram bot. Then `docker compose up -d --build`. Reach the dashboard with `ssh -L 9119:127.0.0.1:9119 <server>`.
+**Moving to a cloud server:** create a small x86 server (2 vCPU, 4 GB RAM); lock it down (SSH keys only, firewall, automatic updates); install Docker; clone this repo and copy `~/.hermes` and `~/scout` with `rsync -a`; run `sudo chown -R 10000:10000 ~/.hermes ~/scout/out`. **Stop Hermes on the old machine before starting it on the new one**, or both will compete for the same Telegram bot. Then `docker compose up -d --build`. Reach the dashboard with `ssh -L 9119:127.0.0.1:9119 <server>`.
 
 Nothing runs while the container is down. The deadline job catches up on missed reminders at its next run.
 
@@ -263,7 +295,7 @@ Nothing runs while the container is down. The deadline job catches up on missed 
 | `execute_code … BLOCKED` in cron runs | Code execution is still enabled. Turn it off in `hermes tools`. |
 | A run ends with `KeyboardInterrupt` | The container was restarted during the run. Run it again. |
 | The bot shows its intermediate steps | `hermes config set display.tool_progress off` and `display.show_reasoning false`, then restart. |
-| The bot doesn't answer | Check `TELEGRAM_*` in `/opt/data/.env`, restart, and `docker compose logs | grep -i telegram`. `TELEGRAM_ALLOWED_USERS` must be your numeric ID. |
+| The bot doesn't answer | Check `TELEGRAM_*` in `/opt/data/.env`, restart, and check `docker compose logs` for Telegram lines. `TELEGRAM_ALLOWED_USERS` must be your numeric ID. |
 | Materials subfolders unreadable | Folders need 755, files 644: run the `find … chmod` commands from step 2. |
 
 ---
@@ -281,24 +313,29 @@ Nothing runs while the container is down. The deadline job catches up on missed 
 
 ```
 .
-├── Dockerfile               # official Hermes image + Claude Code CLI
-├── compose.yml              # container, mounts, dashboard, limits
-├── .env.example             # copy to .env (dashboard password, optional paths)
+├── Dockerfile # official Hermes image + Claude Code CLI
+├── compose.yml # container, mounts, dashboard, limits
+├── .env.example # copy to .env (dashboard password, optional paths)
+├── LICENSE # MIT
 ├── prompts/
-│   ├── scout.md             # instructions for each scout run
-│   ├── deadlines.md         # instructions for the daily deadline check
-│   ├── skill-scout-profile.md   # message that builds the profile skill
-│   └── skill-scout-tracker.md   # message that builds the tracker skill
+│ ├── scout.md # instructions for each scout run
+│ ├── deadlines.md # instructions for the daily deadline check
+│ ├── skill-scout-profile.md # message that builds the profile skill
+│ └── skill-scout-tracker.md # message that builds the tracker skill
 ├── scripts/
-│   ├── init-host.sh         # one-time host setup
-│   ├── create-jobs.sh       # creates the scheduled jobs (run in the container)
-│   └── fetch_alerts.py      # optional alert-mailbox collector
+│ ├── init-host.sh # one-time host setup
+│ ├── create-jobs.sh # creates the scheduled jobs (run in the container)
+│ └── fetch_alerts.py # optional alert-mailbox collector
 └── templates/
-    ├── hermes/              # SOUL.md, list of required keys
-    ├── materials/           # criteria.md, sources.md templates
-    └── out/                 # empty tracker and seen list
+├── hermes/ # SOUL.md, list of required keys
+├── materials/ # criteria.md, sources.md templates
+└── out/ # empty tracker and seen list
 ```
+
+## License
+
+MIT. See `LICENSE`.
 
 ## Acknowledgements
 
-Built on [Hermes Agent](https://github.com/NousResearch/hermes-agent) by Nous Research. Claude and Claude Code are products of Anthropic. This project is unofficial and isn't affiliated with either.
+Built on Hermes Agent by Nous Research. Claude and Claude Code are products of Anthropic. This project is unofficial and isn't affiliated with either.
