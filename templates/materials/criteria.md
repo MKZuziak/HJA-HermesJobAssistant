@@ -1,5 +1,5 @@
 # Scout criteria
-<!-- Template. Copy to ~/scout/materials/criteria.md and fill in. Keep the real file out of git. -->
+<!-- Template: make init copies it to ~/scout/materials/criteria.md. Fill in the real file there. -->
 
 ## Who I am
 - Current position, institution, dates.

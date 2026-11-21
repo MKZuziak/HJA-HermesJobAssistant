@@ -1,5 +1,5 @@
 # Sites to check each run
-<!-- Template. Copy to ~/scout/materials/sources.md and adapt to your field. -->
+<!-- Template: make init copies it to ~/scout/materials/sources.md. Adapt it to your field. -->
 - euraxess.ec.europa.eu (jobs and funding)
 - academicpositions.com
 - jobs.ac.uk

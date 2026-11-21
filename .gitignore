@@ -1,0 +1,25 @@
+# Secrets
+.env
+secrets.env
+*.env
+!.env.example
+!secrets.env.example
+
+# Personal data and agent state (live outside the repo; ignored at the repo root as a safety net)
+/.hermes/
+/data/
+/materials/
+/out/
+/drafts/
+/claude/
+.credentials.json
+*.pdf
+*.tex
+*.docx
+
+# Local artefacts
+*.tgz
+*.zip
+*.log
+__pycache__/
+.DS_Store

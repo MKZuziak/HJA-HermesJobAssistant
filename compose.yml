@@ -1,0 +1,34 @@
+services:
+  hermes:
+    build:
+      context: .
+      args:
+        HERMES_TAG: ${HERMES_TAG:-stable}
+    image: hja-hermes:${HERMES_TAG:-stable}
+    container_name: hermes
+    restart: unless-stopped
+    command: gateway run
+    shm_size: 1g                       # Chromium needs shared memory
+    ports:
+      - "127.0.0.1:9119:9119"          # dashboard; this machine only
+    volumes:
+      # Hermes state: config, secrets, skills, memory, sessions, Claude login
+      - ${HERMES_DATA:-${HOME}/.hermes}:/opt/data:Z
+      # Your documents: CV, criteria, sources (read-only for the agent)
+      - ${SCOUT_MATERIALS:-${HOME}/scout/materials}:/opt/data/materials:ro,Z
+      # Agent output: drafts, tracker, seen list
+      - ${SCOUT_OUT:-${HOME}/scout/out}:/opt/data/scout:Z
+      # This repo's agent assets: prompts, skills, SOUL.md, helper scripts (read-only)
+      - ./agent:/opt/hja:ro,Z
+    environment:
+      # Run Hermes as your own host user, so every file it writes is yours.
+      - HERMES_UID=${HERMES_UID:-10000}
+      - HERMES_GID=${HERMES_GID:-10000}
+      - HERMES_DASHBOARD=1
+      - HERMES_DASHBOARD_BASIC_AUTH_USERNAME=admin
+      - HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=${DASH_PASS:?set DASH_PASS in .env (run make init)}
+      - CLAUDE_CONFIG_DIR=/opt/data/claude
+      - CLAUDE_SUBSCRIPTION_DIRECTSDK_CONFIG_DIR=/opt/data/claude
+    deploy:
+      resources:
+        limits: { memory: 4G, cpus: "2.0" }

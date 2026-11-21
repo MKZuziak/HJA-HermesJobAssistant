@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shell scripts (shellcheck)
+        run: shellcheck scripts/*.sh agent/scripts/*.sh
+
+      - name: Dockerfile (hadolint)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Python (ruff + compile)
+        run: |
+          pip install --quiet ruff
+          ruff check agent/scripts
+          python -m py_compile agent/scripts/*.py
+
+      - name: Compose file
+        run: DASH_PASS=ci docker compose --env-file .env.example config -q
+
+      - name: Skill frontmatter
+        run: |
+          for f in agent/skills/*/SKILL.md; do
+            dir=$(basename "$(dirname "$f")")
+            head -1 "$f" | grep -qx -- '---' || { echo "$f: missing frontmatter"; exit 1; }
+            grep -qx "name: $dir" "$f" || { echo "$f: name must match folder '$dir'"; exit 1; }
+            grep -q '^## When to Use' "$f" || { echo "$f: missing '## When to Use'"; exit 1; }
+          done
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
