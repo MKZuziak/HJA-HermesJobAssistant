@@ -1,4 +1,3 @@
-````markdown
 # Hermes Job Assistant (HJA)
 
 An always-on research-career agent. Twice a day it searches job boards, fellowship pages and funding calls for openings that fit your profile, checks each listing on the real page, scores it against your criteria, drafts a tailored cover letter and checklist for the strong matches, and reports to you on Telegram. **It never applies for you**: you decide what to apply to, and you submit it yourself.
