@@ -1,0 +1,28 @@
+services:
+  hermes:
+    build: .
+    image: hermes-custom
+    container_name: hermes
+    restart: unless-stopped
+    command: gateway run
+    ports:
+      - "127.0.0.1:9119:9119"          # dashboard, reachable from this machine only
+    volumes:
+      # Hermes' own state: config, secrets, skills, memories, sessions
+      - ${HERMES_DATA:-${HOME}/.hermes}:/opt/data:Z
+      # Your documents: CV, criteria, sources, prompts (read-only for the agent)
+      - ${SCOUT_MATERIALS:-${HOME}/scout/materials}:/opt/data/materials:ro,Z
+      # Agent output: drafts, tracker, seen list
+      - ${SCOUT_OUT:-${HOME}/scout/out}:/opt/data/scout:Z
+      # This repo's prompts and scripts (read-only for the agent)
+      - ./prompts:/opt/data/prompts:ro,Z
+      - ./scripts:/opt/data/scout-scripts:ro,Z
+    environment:
+      - HERMES_DASHBOARD=1
+      - HERMES_DASHBOARD_BASIC_AUTH_USERNAME=admin
+      - HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=${DASH_PASS:?set DASH_PASS in .env}
+      - CLAUDE_CONFIG_DIR=/opt/data/claude
+      - CLAUDE_SUBSCRIPTION_DIRECTSDK_CONFIG_DIR=/opt/data/claude
+    deploy:
+      resources:
+        limits: { memory: 4G, cpus: "2.0" }

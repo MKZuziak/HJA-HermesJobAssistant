@@ -1,0 +1,24 @@
+# Secrets
+.env
+*.env
+!.env.example
+!templates/hermes/hermes.env.example
+
+# Personal data and agent state (should live outside the repo anyway)
+data/
+.hermes/
+materials/
+out/
+drafts/
+*.pdf
+*.tex
+!templates/**
+
+# Claude Code login, if ever copied here
+claude/
+.credentials.json
+
+# Misc
+*.tgz
+*.log
+.DS_Store
