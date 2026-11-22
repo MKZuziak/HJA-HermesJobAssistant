@@ -4,12 +4,15 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
+# Read .env (HJA_TIMEZONE etc.) if present.
+-include .env
+
 COMPOSE := docker compose
 EXEC    := docker exec -u hermes hermes
 EXEC_IT := docker exec -it -u hermes hermes
 
 .PHONY: help init build up down restart ps logs shell wizard login configure install \
-        profile jobs run status bootstrap backup update lint
+        profile jobs run brief status bootstrap backup update lint
 
 help: ## List targets
 	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | \
@@ -63,7 +66,7 @@ profile: ## Build the scout-profile skill from your materials
 	$(EXEC) hermes chat -Q --query-file /opt/hja/prompts/build-profile.md
 
 jobs: ## Create or update the scheduled jobs (idempotent)
-	$(EXEC) sh /opt/hja/scripts/jobs.sh
+	docker exec -u hermes -e HJA_TIMEZONE="$(or $(HJA_TIMEZONE),UTC)" hermes sh /opt/hja/scripts/jobs.sh
 
 bootstrap: configure restart install profile jobs ## configure, restart, install, profile, jobs
 
@@ -71,6 +74,9 @@ bootstrap: configure restart install profile jobs ## configure, restart, install
 
 run: ## Run the scout now and wait for it (10-20 min)
 	$(EXEC_IT) hermes cron run scout
+
+brief: ## Produce this week's market brief now
+	$(EXEC_IT) hermes cron run brief
 
 status: ## Scheduled jobs and recent runs
 	$(EXEC) hermes cron list

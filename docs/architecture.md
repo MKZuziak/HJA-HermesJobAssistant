@@ -36,8 +36,8 @@ flowchart LR
 |---|---|
 | **Gateway** | Hermes' long-running service, supervised by s6 inside the container: Telegram connection, cron scheduler, web dashboard. |
 | **Agent** | Does the work. Each turn it follows `SOUL.md` (standing rules), the attached skills and the prompt. |
-| **Skills** | `scout-tracker` ships in `agent/skills/` and is installed as-is. `scout-profile` is generated from your own materials by `make profile`, because it is different for every user. |
-| **Cron jobs** | `scout` (every 12 h) and `deadlines` (every 24 h), created and updated by name by `agent/scripts/jobs.sh`. Each run starts fresh; it knows only its prompt and its skills. Missed runs are caught up once when the container returns (`--catch-up on`). |
+| **Skills** | `scout-tracker` and `career-advisor` ship in `agent/skills/` and are installed as-is. `scout-profile` is generated from your own materials by `make profile`, because it is different for every user. |
+| **Cron jobs** | `scout` (every 12 h), `deadlines` (every 24 h) and `brief` (Mondays 08:00, `HJA_TIMEZONE`), created and updated by name by `agent/scripts/jobs.sh`. Each run starts fresh; it knows only its prompt and its skills. Missed runs are caught up once when the container returns (`--catch-up on`). |
 | **Claude Code CLI** | Baked into the image. With the *Claude Subscription DirectSDK* plugin, model calls go through it, so runs use your Claude subscription rather than a separate API key. Any other provider works too: see [models.md](models.md). |
 | **Brave / Tavily** | Web search and page reading (`web.search_backend`, `web.extract_backend`). |
 | **Chromium** | Bundled with Hermes, for JavaScript-heavy pages such as Workday job portals. |
@@ -48,8 +48,8 @@ flowchart LR
 | Host path | Container path | Contents | In git |
 |---|---|---|---|
 | repo `agent/` | `/opt/hja` (ro) | prompts, skills, `SOUL.md`, helper scripts | yes |
-| `~/scout/materials` | `/opt/data/materials` (ro) | CV, past applications, `criteria.md`, `sources.md` | no |
-| `~/scout/out` | `/opt/data/scout` | `drafts/`, `applications.md`, `seen.md` | no |
+| `~/scout/materials` | `/opt/data/materials` (ro) | CV, past applications, `criteria.md`, `sources.md`, `guides/` | no |
+| `~/scout/out` | `/opt/data/scout` | `drafts/`, `briefs/`, `applications.md`, `seen.md` | no |
 | `~/.hermes` | `/opt/data` | Hermes config, `.env` secrets, skills, memory, sessions, cron state, Claude login | no |
 | repo `.env`, `secrets.env` | — | dashboard password, UID/GID, image tag; API keys before `make configure` | no (gitignored) |
 

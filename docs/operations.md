@@ -6,6 +6,7 @@
 | Logs | `make logs` (Ctrl-C stops following; Hermes keeps running) |
 | Jobs and recent runs | `make status` |
 | Run the scout now | `make run`, or the trigger button in the dashboard |
+| Market brief now | `make brief` |
 | Dashboard | http://localhost:9119, user `admin`, password `DASH_PASS` in `.env` |
 | Shell in the container | `make shell` |
 | Stop / start | `make down` / `make up` |

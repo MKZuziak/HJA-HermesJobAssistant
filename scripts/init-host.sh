@@ -19,7 +19,7 @@ fi
 say() { printf '  %-10s %s\n' "$1" "$2"; }
 
 echo "Folders"
-mkdir -p "$HERMES_DATA" "$SCOUT_MATERIALS" "$SCOUT_OUT/drafts"
+mkdir -p "$HERMES_DATA" "$SCOUT_MATERIALS" "$SCOUT_OUT/drafts" "$SCOUT_OUT/briefs"
 say "state" "$HERMES_DATA"
 say "materials" "$SCOUT_MATERIALS"
 say "output" "$SCOUT_OUT"
@@ -28,14 +28,14 @@ echo "Templates (existing files are kept)"
 copy_new() {  # copy_new SRC_DIR DEST_DIR: copy files that don't exist yet
   for src in "$1"/*; do
     dest="$2/$(basename "$src")"
-    [ -e "$dest" ] || cp "$src" "$dest"
+    [ -e "$dest" ] || cp -R "$src" "$dest"
   done
 }
 copy_new "$REPO/templates/materials" "$SCOUT_MATERIALS"
 copy_new "$REPO/templates/out" "$SCOUT_OUT"
 find "$SCOUT_MATERIALS" -type d -exec chmod 755 {} +
 find "$SCOUT_MATERIALS" -type f -exec chmod 644 {} +
-say "copied" "criteria.md, sources.md, applications.md, seen.md"
+say "copied" "criteria.md, sources.md, guides/, applications.md, seen.md"
 
 echo "Config files"
 if [ ! -f "$REPO/.env" ]; then

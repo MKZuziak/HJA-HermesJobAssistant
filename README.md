@@ -17,6 +17,7 @@ Built on [Hermes Agent](https://hermes-agent.nousresearch.com/) by Nous Research
 - **Drafts** a cover letter in your writing style, plus a submission checklist, for matches scoring 75+.
 - **Tracks** everything in one table: found → drafting → planned → applied → interview / rejected / offer.
 - **Reminds** you of deadlines for applications you've said yes to (14, 7, 3, 1 days out).
+- **Advises**: a weekly market brief with sourced hiring and funding signals, CV tailoring notes for every application you pursue, and honest progress reviews on request.
 - **Stays quiet** when there is nothing new.
 
 ## How it works
@@ -58,6 +59,7 @@ The full walkthrough is in [docs/setup.md](docs/setup.md). Run `make` to list ev
 | `apply <slug>` / `skip <slug>` | Plan it (reminders start) or drop it |
 | `applied to X` / `interview at Y` / … | Tracker updated |
 | `status` | Open applications by deadline |
+| `how am I doing?` | Pipeline review and where to focus |
 
 More: [docs/usage.md](docs/usage.md).
 
@@ -80,11 +82,11 @@ The residual risks are covered in [docs/architecture.md](docs/architecture.md#se
 ├── secrets.env.example       # → secrets.env: API keys, Telegram, mailbox
 ├── agent/                    # mounted read-only into the container at /opt/hja
 │   ├── SOUL.md               # standing rules
-│   ├── prompts/              # scout run, deadline check, profile builder
-│   ├── skills/scout-tracker/ # shipped skill
+│   ├── prompts/              # scout run, deadline check, market brief, profile builder
+│   ├── skills/               # shipped skills: scout-tracker, career-advisor
 │   └── scripts/              # apply_config.py, install.sh, jobs.sh, fetch_alerts.py
 ├── scripts/init-host.sh      # host setup (make init)
-├── templates/                # criteria, sources, empty tracker
+├── templates/                # starting files copied once by make init (never put real data here)
 ├── docs/                     # architecture, setup, usage, models, operations, troubleshooting
 └── .github/workflows/ci.yml  # shellcheck, hadolint, ruff, compose, skill format, gitleaks
 ```
