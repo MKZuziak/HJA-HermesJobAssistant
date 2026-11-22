@@ -18,6 +18,7 @@ Built on [Hermes Agent](https://hermes-agent.nousresearch.com/) by Nous Research
 - **Tracks** everything in one table: found → drafting → planned → applied → interview / rejected / offer.
 - **Reminds** you of deadlines for applications you've said yes to (14, 7, 3, 1 days out).
 - **Advises**: a weekly market brief with sourced hiring and funding signals, CV tailoring notes for every application you pursue, and honest progress reviews on request.
+- **Plans**: a monthly three-month strategy built from your outcomes, debriefs and evolving preferences, framed as a sequence of experiments rather than one big bet.
 - **Stays quiet** when there is nothing new.
 
 ## How it works
@@ -60,6 +61,7 @@ The full walkthrough is in [docs/setup.md](docs/setup.md). Run `make` to list ev
 | `applied to X` / `interview at Y` / … | Tracker updated |
 | `status` | Open applications by deadline |
 | `how am I doing?` | Pipeline review and where to focus |
+| `plan` · `note: <impression>` | Current three-month plan · log a reflection for future plans |
 
 More: [docs/usage.md](docs/usage.md).
 
@@ -82,8 +84,8 @@ The residual risks are covered in [docs/architecture.md](docs/architecture.md#se
 ├── secrets.env.example       # → secrets.env: API keys, Telegram, mailbox
 ├── agent/                    # mounted read-only into the container at /opt/hja
 │   ├── SOUL.md               # standing rules
-│   ├── prompts/              # scout run, deadline check, market brief, profile builder
-│   ├── skills/               # shipped skills: scout-tracker, career-advisor
+│   ├── prompts/              # scout, deadlines, market brief, strategy, profile builder
+│   ├── skills/               # shipped skills: scout-tracker, career-advisor, strategist
 │   └── scripts/              # apply_config.py, install.sh, jobs.sh, fetch_alerts.py
 ├── scripts/init-host.sh      # host setup (make init)
 ├── templates/                # starting files copied once by make init (never put real data here)

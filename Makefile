@@ -12,7 +12,7 @@ EXEC    := docker exec -u hermes hermes
 EXEC_IT := docker exec -it -u hermes hermes
 
 .PHONY: help init build up down restart ps logs shell wizard login configure install \
-        profile jobs run brief status bootstrap backup update lint
+        profile jobs run brief strategy status bootstrap backup update lint
 
 help: ## List targets
 	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | \
@@ -77,6 +77,9 @@ run: ## Run the scout now and wait for it (10-20 min)
 
 brief: ## Produce this week's market brief now
 	$(EXEC_IT) hermes cron run brief
+
+strategy: ## Produce the three-month plan now
+	$(EXEC_IT) hermes cron run strategy
 
 status: ## Scheduled jobs and recent runs
 	$(EXEC) hermes cron list

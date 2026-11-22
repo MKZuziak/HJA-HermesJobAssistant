@@ -72,9 +72,9 @@ which runs, in order:
 |---|---|
 | `make configure` | Writes `secrets.env` into Hermes' `.env` (update-in-place), sets search/extract backends, quiet Telegram output, cron behaviour, and disables terminal and code execution |
 | `make restart` | Loads the new settings |
-| `make install` | Installs the `scout-tracker` and `career-advisor` skills, `fetch_alerts.py` and `SOUL.md` |
+| `make install` | Installs the `scout-tracker`, `career-advisor` and `strategist` skills, `fetch_alerts.py` and `SOUL.md` |
 | `make profile` | Has the agent build the `scout-profile` skill from your materials |
-| `make jobs` | Creates (or updates) the `scout`, `deadlines` and `brief` jobs |
+| `make jobs` | Creates (or updates) the `scout`, `deadlines`, `brief` and `strategy` jobs |
 
 All of them are safe to re-run.
 

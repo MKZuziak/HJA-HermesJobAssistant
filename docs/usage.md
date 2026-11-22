@@ -8,10 +8,12 @@
 | a job link, optionally with "track this" or "draft" | Opened, verified, scored and added to the tracker; drafts written if it scores 60+ or you say "draft". |
 | `apply <slug>` | Status "planned"; drafts checked; CV tailoring notes written; deadline reminders start (14, 7, 3 and 1 days before). |
 | `skip <slug>` | Status "dropped"; never suggested again. |
-| `applied to X` · `interview at Y` · `rejected from Z` · `offer from W` | Status and date updated. |
+| `applied to X` · `interview at Y` · `rejected from Z` · `offer from W` | Status and date updated; for interviews, rejections and offers the bot asks two quick debrief questions (how far it got, any feedback). |
 | `status` | Open applications by deadline, plus counts per status. |
 | `how am I doing?` · `what should I focus on?` | Career advisor: an honest review of your pipeline and where effort pays off. |
 | `review my CV for <slug>` | CV tailoring notes for that opening. |
+| `plan` · `what should I do next?` | Strategist: the current three-month plan, updated for anything new. |
+| `note: <impression>` | A reflection on a place, role or experience, logged in `preferences.md` for future plans. |
 
 ## Files
 
@@ -22,6 +24,9 @@
 | `~/scout/out/drafts/<slug>/checklist.md` | Required documents and submission steps. |
 | `~/scout/out/drafts/<slug>/cv_notes.md` | How to tailor your CV for this opening: requirements, your evidence, gaps, what to reorder or cut. Your CV itself is never changed. |
 | `~/scout/out/briefs/<date>.md` | Weekly market briefs. |
+| `~/scout/out/plans/<YYYY-MM>.md` | Monthly three-month plans. |
+| `~/scout/out/preferences.md` | Your axes, current leanings and dated reflections. Edit it freely. |
+| `~/scout/out/debriefs.md` | One line per outcome: stage reached, feedback, your read. |
 | `~/scout/out/seen.md` | Everything already assessed, so nothing is reported twice. |
 
 ## Career advisor
@@ -33,6 +38,19 @@ The `career-advisor` skill adds three things:
 - **Coaching on demand**: ask in Telegram. Answers are based on your tracker, profile and the latest brief, and separate evidence ("source, date") from the advisor's own judgement.
 
 Put CV or application guides you trust in `~/scout/materials/guides/`; the advisor follows them over its general advice.
+
+## Strategist
+
+Once a month (the 1st, 09:00 in `HJA_TIMEZONE`; `make strategy` for one now) the `strategist` skill writes a three-month plan from everything it knows: your CV, the tracker, debriefs, market briefs and `preferences.md`.
+
+It assumes you are **exploring**: still finding out where you want to live, through fixed-term moves rather than one big commitment. So the plan is a short sequence of experiments, each a role type × place, with why it was chosen, what it would teach you and how you'll know. It also gives an application mix (safe / realistic / stretch), at most three skills worth building, what to stop doing, and up to three questions whose answers sharpen the next plan.
+
+Options are weighed on three axes, financial return, mobility/optionality and geography, without fixed weights: your leanings and dated reflections in `preferences.md` decide, newer ones counting more. Two habits make the plans better over time:
+
+- **Answer the debrief questions** after each outcome, even with one line. Patterns need outcomes with reasons.
+- **Send reflections** after visits, interviews or moves: `note: liked the pace in X, cost of living too high`.
+
+With few outcomes the plan says its patterns are tentative and leans on your profile and the market; it gets sharper as data accumulates.
 
 ## Teaching it
 
@@ -50,6 +68,7 @@ Changes to `criteria.md` work the same way: edit the file, then run `make profil
 |---|---|
 | Criteria, CV, writing samples | Edit `~/scout/materials/`, then `make profile`. |
 | Sites and queries | Edit `~/scout/materials/sources.md`. Picked up on the next run. |
+| Preferences and location order | Edit `~/scout/out/preferences.md` (read by every plan). Keep the location priority in `criteria.md` in step, then `make profile`. |
 | What each run does | Edit `agent/prompts/scout.md` or `deadlines.md`, then `make jobs`. |
 | Tracker behaviour | Edit `agent/skills/scout-tracker/SKILL.md`, then `make install`. |
 | Standing rules | Edit `agent/SOUL.md`, then `make install && make restart`. |
