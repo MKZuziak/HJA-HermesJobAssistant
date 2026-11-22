@@ -1,0 +1,6 @@
+# Lint rules for the Python helpers (agent/scripts, tests). Pinned so CI and local runs agree.
+target-version = "py311"
+line-length = 120
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "FURB", "RUF"]

@@ -1,7 +1,7 @@
 """Offline tests for agent/scripts/research_radar.py (no network)."""
 import importlib.util
 import unittest
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 SPEC = importlib.util.spec_from_file_location(
@@ -46,7 +46,7 @@ OPENALEX_PAGE = {
 
 class ArxivTests(unittest.TestCase):
     def test_parse_filters_by_date_and_normalises(self):
-        since = datetime(2026, 11, 1, tzinfo=timezone.utc)
+        since = datetime(2026, 11, 1, tzinfo=UTC)
         papers = radar.parse_arxiv(ARXIV_FEED, since)
         self.assertEqual(len(papers), 1)
         p = papers[0]

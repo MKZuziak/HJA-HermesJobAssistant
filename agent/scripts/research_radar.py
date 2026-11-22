@@ -24,7 +24,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 HOME = Path(os.environ.get("HERMES_HOME", "/opt/data"))
@@ -101,7 +101,7 @@ def parse_arxiv(xml_bytes: bytes, since: datetime) -> list[dict]:
     for entry in root.findall("a:entry", ATOM):
         published = entry.findtext("a:published", "", ATOM)
         try:
-            when = datetime.fromisoformat(published.replace("Z", "+00:00"))
+            when = datetime.fromisoformat(published)  # Python 3.11+ parses the trailing Z
         except ValueError:
             continue
         if when < since:
@@ -239,7 +239,7 @@ def main() -> int:
     state = load_json(STATE_PATH, {"seen": []})
     seen = set(state["seen"])
     env = load_env(ENV_PATH)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     notes: list[str] = []
 
     papers = collect_arxiv(cfg, now - timedelta(days=int(cfg["lookback_days"])), seen, notes)
