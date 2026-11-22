@@ -27,11 +27,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Python (ruff + compile)
+      - name: Python (ruff + compile + tests)
         run: |
           pip install --quiet ruff
-          ruff check agent/scripts
+          ruff check agent/scripts tests
           python -m py_compile agent/scripts/*.py
+          python -m unittest discover -s tests -v
 
       - name: Compose file
         run: DASH_PASS=ci docker compose --env-file .env.example config -q

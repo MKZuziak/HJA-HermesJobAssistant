@@ -8,6 +8,7 @@
 | Run the scout now | `make run`, or the trigger button in the dashboard |
 | Market brief now | `make brief` |
 | Three-month plan now | `make strategy` |
+| Research radar / calls radar / mobility check now | `make radar` · `make calls` · `make mobility` |
 | Dashboard | http://localhost:9119, user `admin`, password `DASH_PASS` in `.env` |
 | Shell in the container | `make shell` |
 | Stop / start | `make down` / `make up` |

@@ -19,8 +19,10 @@ done
 
 # Cron scripts must live in Hermes' own scripts folder (absolute paths are refused).
 mkdir -p "$DATA/scripts"
-cp "$SRC/scripts/fetch_alerts.py" "$DATA/scripts/fetch_alerts.py"
-echo "script     scripts/fetch_alerts.py"
+for script in fetch_alerts.py research_radar.py; do
+  cp "$SRC/scripts/$script" "$DATA/scripts/$script"
+  echo "script     scripts/$script"
+done
 
 # Standing rules loaded into every session.
 cp "$SRC/SOUL.md" "$DATA/SOUL.md"

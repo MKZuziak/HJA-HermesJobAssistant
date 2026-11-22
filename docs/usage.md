@@ -14,6 +14,9 @@
 | `review my CV for <slug>` | CV tailoring notes for that opening. |
 | `plan` · `what should I do next?` | Strategist: the current three-month plan, updated for anything new. |
 | `note: <impression>` | A reflection on a place, role or experience, logged in `preferences.md` for future plans. |
+| `radar` · `who cites me?` · `which labs should I watch?` | Research radar: latest digest and the labs watchlist. |
+| `calls` · `short stays in <country>?` | Calls radar: visiting positions, short fellowships, schools, workshop calls, travel grants. |
+| `visa <country>` | Mobility: routes, requirements, your estimated standing, recent changes. |
 
 ## Files
 
@@ -27,6 +30,8 @@
 | `~/scout/out/plans/<YYYY-MM>.md` | Monthly three-month plans. |
 | `~/scout/out/preferences.md` | Your axes, current leanings and dated reflections. Edit it freely. |
 | `~/scout/out/debriefs.md` | One line per outcome: stage reached, feedback, your read. |
+| `~/scout/out/radar/digests/<date>.md` · `radar/labs.md` | Daily radar digests; the watchlist of labs active in your area. |
+| `~/scout/out/mobility/<country>.md` | Visa and residency routes with official sources, your estimated standing, changes since the last check. |
 | `~/scout/out/seen.md` | Everything already assessed, so nothing is reported twice. |
 
 ## Career advisor
@@ -52,6 +57,24 @@ Options are weighed on three axes, financial return, mobility/optionality and ge
 
 With few outcomes the plan says its patterns are tentative and leans on your profile and the market; it gets sharper as data accumulates.
 
+## Research radar
+
+Every morning (07:00) a script collects new arXiv papers matching the queries in `radar.json` and, with an OpenAlex key and your author ID, new works citing your papers. The agent then reports:
+
+- **every citation** of your work, with which paper it builds on and whether the authors look like collaborators;
+- the few **relevant new papers**, labelled *overlap*, *builds on* or *useful*;
+- **labs worth watching**, kept in `radar/labs.md`; once a lab in one of your target countries shows up three times, it suggests adding its page to `sources.md`.
+
+Quiet days stay silent. The script asks arXiv for one query every few seconds, as arXiv's API terms require, and never re-reports a paper.
+
+## Calls radar
+
+Every Wednesday (08:00) the calls radar checks the programme pages, venues and queries in `calls.md`, plus the visiting pages of labs on your watchlist, for things that aren't job ads: visiting positions, short fellowships, summer schools, workshop calls, travel grants. Each item is confirmed on its own page (deadline, duration, eligibility, funding), scored with extra weight for **exploration value** (a target country you haven't tried yet), and added to the tracker with a kind tag such as `[visit]` or `[school]`. Say `apply <slug>` as usual to get drafts and deadline reminders.
+
+## Mobility intelligence
+
+On the 15th of each month the mobility check researches, from **official government sources only**, the work-permit, talent and residency routes for each country in your location order, and estimates your standing from the *Mobility facts* in `criteria.md` and your CV (for points systems, with the breakdown). It reports what changed since the last check and what would improve your standing. Estimates, not legal advice: confirm with the authority before acting.
+
 ## Teaching it
 
 The model doesn't change. Hermes improves by writing things down, and scheduled runs start fresh, so **feedback only sticks once it is in a skill**:
@@ -68,6 +91,8 @@ Changes to `criteria.md` work the same way: edit the file, then run `make profil
 |---|---|
 | Criteria, CV, writing samples | Edit `~/scout/materials/`, then `make profile`. |
 | Sites and queries | Edit `~/scout/materials/sources.md`. Picked up on the next run. |
+| Radar queries, citation tracking | Edit `~/scout/materials/radar.json`. |
+| Calls sources | Edit `~/scout/materials/calls.md`. |
 | Preferences and location order | Edit `~/scout/out/preferences.md` (read by every plan). Keep the location priority in `criteria.md` in step, then `make profile`. |
 | What each run does | Edit `agent/prompts/scout.md` or `deadlines.md`, then `make jobs`. |
 | Tracker behaviour | Edit `agent/skills/scout-tracker/SKILL.md`, then `make install`. |
