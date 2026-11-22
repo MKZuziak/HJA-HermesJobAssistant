@@ -19,6 +19,7 @@ Built on [Hermes Agent](https://hermes-agent.nousresearch.com/) by Nous Research
 - **Reminds** you of deadlines for applications you've said yes to (14, 7, 3, 1 days out).
 - **Advises**: a weekly market brief with sourced hiring and funding signals, CV tailoring notes for every application you pursue, and honest progress reviews on request.
 - **Plans**: a monthly three-month strategy built from your outcomes, debriefs and evolving preferences, framed as a sequence of experiments rather than one big bet.
+- **Watches your field**: a daily research radar (new papers, who cites you, labs worth watching), a weekly calls radar for short stays, schools and travel grants, and a monthly visa and residency check per target country, from official sources.
 - **Stays quiet** when there is nothing new.
 
 ## How it works
@@ -62,6 +63,7 @@ The full walkthrough is in [docs/setup.md](docs/setup.md). Run `make` to list ev
 | `status` | Open applications by deadline |
 | `how am I doing?` | Pipeline review and where to focus |
 | `plan` · `note: <impression>` | Current three-month plan · log a reflection for future plans |
+| `radar` · `calls` · `visa <country>` | Latest research digest · short stays and calls · visa routes and your standing |
 
 More: [docs/usage.md](docs/usage.md).
 
@@ -84,24 +86,30 @@ The residual risks are covered in [docs/architecture.md](docs/architecture.md#se
 ├── secrets.env.example       # → secrets.env: API keys, Telegram, mailbox
 ├── agent/                    # mounted read-only into the container at /opt/hja
 │   ├── SOUL.md               # standing rules
-│   ├── prompts/              # scout, deadlines, market brief, strategy, profile builder
-│   ├── skills/               # shipped skills: scout-tracker, career-advisor, strategist
-│   └── scripts/              # apply_config.py, install.sh, jobs.sh, fetch_alerts.py
+│   ├── prompts/              # one per job, plus the profile builder
+│   ├── skills/               # scout-tracker, career-advisor, strategist, research-radar, calls-radar, mobility-intel
+│   └── scripts/              # apply_config.py, install.sh, jobs.sh, fetch_alerts.py, research_radar.py
 ├── scripts/init-host.sh      # host setup (make init)
 ├── templates/                # starting files copied once by make init (never put real data here)
+├── tests/                    # offline unit tests (python -m unittest)
 ├── docs/                     # architecture, setup, usage, models, operations, troubleshooting
-└── .github/workflows/ci.yml  # shellcheck, hadolint, ruff, compose, skill format, gitleaks
+└── .github/workflows/ci.yml  # shellcheck, hadolint, ruff, unit tests, compose, skill format, gitleaks
 ```
 
 ## Limits
 
 - The agent can misread a deadline or an eligibility rule. Every listing links to its source: check it before applying.
-- Search and page reading run on free tiers. A twice-daily run with about 7 sites and 7 queries stays within them.
+- Search and page reading run on free tiers. The scout twice a day plus the weekly calls radar, with about 7 sites and 7 queries each, stay within them; the research radar uses the arXiv and OpenAlex APIs instead.
+- Visa and residency estimates come from official sources but are not legal advice.
 - The Claude subscription route uses an experimental plugin, and Anthropic's terms for third-party agents have changed several times. See [docs/models.md](docs/models.md).
 
 ## Documentation
 
 [Architecture](docs/architecture.md) · [Setup](docs/setup.md) · [Usage](docs/usage.md) · [Models](docs/models.md) · [Operations](docs/operations.md) · [Troubleshooting](docs/troubleshooting.md)
+
+## Acknowledgements
+
+Thank you to arXiv for use of its open access interoperability. Citation data from [OpenAlex](https://openalex.org) (CC0).
 
 ## License
 

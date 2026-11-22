@@ -43,3 +43,13 @@
 - 75+: shortlist and draft materials
 - 60–74: mention in the report, no drafts
 - Below 60: ignore
+
+## Mobility facts
+<!-- Used by the mobility-intel skill to estimate visa and residency standing. Leave out anything you'd rather not share; it will list what's missing. -->
+- Citizenship(s):
+- Year of birth (points systems often use age):
+- Degrees (level, field, year, country):
+- Years of professional / research experience since the highest degree:
+- Language certificates and levels (e.g. IELTS, JLPT, TEF):
+- Expected salary band (optional):
+- Moving with partner / dependants (optional):

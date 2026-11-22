@@ -1,0 +1,11 @@
+{
+  "lookback_days": 3,
+  "arxiv_queries": [
+    "abs:\"federated learning\" AND (abs:privacy OR abs:poisoning OR abs:backdoor)",
+    "abs:\"membership inference\"",
+    "abs:\"differential privacy\" AND abs:\"machine learning\""
+  ],
+  "arxiv_categories": ["cs.CR", "cs.LG"],
+  "max_per_query": 25,
+  "openalex_author_id": ""
+}

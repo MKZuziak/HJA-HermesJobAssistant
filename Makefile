@@ -12,7 +12,7 @@ EXEC    := docker exec -u hermes hermes
 EXEC_IT := docker exec -it -u hermes hermes
 
 .PHONY: help init build up down restart ps logs shell wizard login configure install \
-        profile jobs run brief strategy status bootstrap backup update lint
+        profile jobs run brief strategy radar calls mobility status bootstrap backup update lint
 
 help: ## List targets
 	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | \
@@ -81,6 +81,15 @@ brief: ## Produce this week's market brief now
 strategy: ## Produce the three-month plan now
 	$(EXEC_IT) hermes cron run strategy
 
+radar: ## Run the research radar now
+	$(EXEC_IT) hermes cron run radar
+
+calls: ## Run the calls radar now
+	$(EXEC_IT) hermes cron run calls
+
+mobility: ## Run the mobility check now
+	$(EXEC_IT) hermes cron run mobility
+
 status: ## Scheduled jobs and recent runs
 	$(EXEC) hermes cron list
 	$(EXEC) hermes cron runs --limit 10
@@ -99,5 +108,6 @@ lint: ## Run the same checks as CI (needs Docker)
 	docker run --rm -v "$(CURDIR):/mnt:ro,Z" -w /mnt koalaman/shellcheck:stable scripts/*.sh agent/scripts/*.sh
 	docker run --rm -i hadolint/hadolint < Dockerfile
 	python3 -m py_compile agent/scripts/*.py && rm -rf agent/scripts/__pycache__
+	python3 -m unittest discover -s tests && rm -rf tests/__pycache__
 	DASH_PASS=lint $(COMPOSE) --env-file .env.example config -q
 	@echo "lint: ok"

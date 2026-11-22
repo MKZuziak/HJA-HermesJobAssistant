@@ -27,6 +27,9 @@ The agent reads **only `~/scout/materials/`**. The repo's `templates/` folder is
 - `criteria.md`: who you are, topics, roles, location priority, hard exclusions, scoring rubric and thresholds.
 - `sources.md`: the sites and search queries to check each run.
 - `guides/` (optional): CV and application guides the career advisor should follow.
+- `calls.md`: programme pages, venues and queries for the calls radar (visits, short fellowships, schools, travel grants).
+- `radar.json`: arXiv queries and categories for the research radar, and your OpenAlex author ID for citation tracking (find it by searching your name on openalex.org; it starts with `A`).
+- The *Mobility facts* section of `criteria.md`: facts visa rules use (citizenship, degrees, experience, languages). Leave out anything you prefer; the mobility check lists what's missing.
 
 Copying from another machine: `rsync -a ~/scout/materials/ <server>:~/scout/materials/`.
 
@@ -34,9 +37,9 @@ You can add and edit files here at any time, even while Hermes runs. Don't delet
 
 ## 3. Secrets and timezone
 
-Fill in `secrets.env`. `TELEGRAM_HOME_CHANNEL` is where reports go; for a private chat with your bot it equals your user ID.
+Fill in `secrets.env`. `TELEGRAM_HOME_CHANNEL` is where reports go; for a private chat with your bot it equals your user ID. `OPENALEX_API_KEY` (free, from openalex.org) turns on citation tracking in the research radar.
 
-In `.env`, set `HJA_TIMEZONE` (e.g. `Europe/Rome`): the weekly brief runs Mondays at 08:00 in that zone.
+In `.env`, set `HJA_TIMEZONE` (e.g. `Europe/Rome`): the radar, briefs, plans and mobility checks run at fixed local times in that zone (see the schedule in [architecture.md](architecture.md#schedule)).
 
 ## 4. Build, first-run wizard, start
 
@@ -72,9 +75,9 @@ which runs, in order:
 |---|---|
 | `make configure` | Writes `secrets.env` into Hermes' `.env` (update-in-place), sets search/extract backends, quiet Telegram output, cron behaviour, and disables terminal and code execution |
 | `make restart` | Loads the new settings |
-| `make install` | Installs the `scout-tracker`, `career-advisor` and `strategist` skills, `fetch_alerts.py` and `SOUL.md` |
+| `make install` | Installs the shipped skills, the `fetch_alerts.py` and `research_radar.py` scripts, and `SOUL.md` |
 | `make profile` | Has the agent build the `scout-profile` skill from your materials |
-| `make jobs` | Creates (or updates) the `scout`, `deadlines`, `brief` and `strategy` jobs |
+| `make jobs` | Creates (or updates) all scheduled jobs: `scout`, `deadlines`, `radar`, `calls`, `brief`, `strategy`, `mobility` |
 
 All of them are safe to re-run.
 

@@ -46,6 +46,21 @@ upsert brief "0 8 * * 1" "$PROMPTS/market-brief.md" "" \
   --skill career-advisor --skill scout-profile --skill scout-tracker \
   --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
 
+# Daily research radar: 07:00. The script collects arXiv papers and OpenAlex citations.
+upsert radar "0 7 * * *" "$PROMPTS/radar.md" research_radar.py \
+  --skill research-radar --skill scout-profile \
+  --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
+
+# Weekly calls radar (short stays, schools, workshop calls, travel grants): Wednesdays 08:00.
+upsert calls "0 8 * * 3" "$PROMPTS/calls.md" "" \
+  --skill calls-radar --skill scout-profile --skill scout-tracker \
+  --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
+
+# Monthly mobility check (visa and residency routes): 15th of each month, 09:00.
+upsert mobility "0 9 15 * *" "$PROMPTS/mobility.md" "" \
+  --skill mobility-intel --skill scout-profile \
+  --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
+
 # Monthly three-month plan: 1st of each month, 09:00 in HJA_TIMEZONE.
 upsert strategy "0 9 1 * *" "$PROMPTS/strategy.md" "" \
   --skill strategist --skill scout-profile --skill scout-tracker --skill career-advisor \

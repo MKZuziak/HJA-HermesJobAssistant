@@ -13,7 +13,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Shell scripts (shellcheck)
         run: shellcheck scripts/*.sh agent/scripts/*.sh
@@ -23,15 +23,16 @@ jobs:
         with:
           dockerfile: Dockerfile
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
-      - name: Python (ruff + compile)
+      - name: Python (ruff + compile + tests)
         run: |
-          pip install --quiet ruff
-          ruff check agent/scripts
+          pip install --quiet ruff==0.16.9
+          ruff check agent/scripts tests
           python -m py_compile agent/scripts/*.py
+          python -m unittest discover -s tests -v
 
       - name: Compose file
         run: DASH_PASS=ci docker compose --env-file .env.example config -q
@@ -49,7 +50,7 @@ jobs:
     name: Secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
