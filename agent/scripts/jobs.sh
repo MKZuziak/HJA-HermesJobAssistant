@@ -46,5 +46,10 @@ upsert brief "0 8 * * 1" "$PROMPTS/market-brief.md" "" \
   --skill career-advisor --skill scout-profile --skill scout-tracker \
   --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
 
+# Monthly three-month plan: 1st of each month, 09:00 in HJA_TIMEZONE.
+upsert strategy "0 9 1 * *" "$PROMPTS/strategy.md" "" \
+  --skill strategist --skill scout-profile --skill scout-tracker --skill career-advisor \
+  --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
+
 echo
 hermes cron list

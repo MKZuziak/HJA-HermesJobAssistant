@@ -19,7 +19,7 @@ fi
 say() { printf '  %-10s %s\n' "$1" "$2"; }
 
 echo "Folders"
-mkdir -p "$HERMES_DATA" "$SCOUT_MATERIALS" "$SCOUT_OUT/drafts" "$SCOUT_OUT/briefs"
+mkdir -p "$HERMES_DATA" "$SCOUT_MATERIALS" "$SCOUT_OUT/drafts" "$SCOUT_OUT/briefs" "$SCOUT_OUT/plans"
 say "state" "$HERMES_DATA"
 say "materials" "$SCOUT_MATERIALS"
 say "output" "$SCOUT_OUT"
@@ -35,7 +35,7 @@ copy_new "$REPO/templates/materials" "$SCOUT_MATERIALS"
 copy_new "$REPO/templates/out" "$SCOUT_OUT"
 find "$SCOUT_MATERIALS" -type d -exec chmod 755 {} +
 find "$SCOUT_MATERIALS" -type f -exec chmod 644 {} +
-say "copied" "criteria.md, sources.md, guides/, applications.md, seen.md"
+say "copied" "criteria.md, sources.md, guides/, applications.md, seen.md, preferences.md, debriefs.md"
 
 echo "Config files"
 if [ ! -f "$REPO/.env" ]; then

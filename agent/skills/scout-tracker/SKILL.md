@@ -1,14 +1,14 @@
 ---
 name: scout-tracker
 description: "Track job and grant applications in a markdown table: add links, draft materials, update statuses, summarise."
-version: 1.1.0
+version: 1.2.0
 author: Hermes Job Assistant
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [Jobs, Applications, Tracker, Career]
-    related_skills: [scout-profile, career-advisor]
+    related_skills: [scout-profile, career-advisor, strategist]
 ---
 
 # Scout Tracker
@@ -48,7 +48,9 @@ Keeps the user's job and grant search in one table: `/opt/data/scout/application
 - `skip`: set status `dropped`.
 
 ### Progress reports
-Update the matching row's status and append `<status> <YYYY-MM-DD>` to its notes.
+1. Update the matching row's status and append `<status> <YYYY-MM-DD>` to its notes.
+2. For `interview`, `rejected` and `offer`, ask at most two short questions in one message: "How far did it get?" and "Any feedback, and your own read on why?". Accept short or partial answers; "skip" is fine.
+3. Append one row to `/opt/data/scout/debriefs.md`: date, slug, outcome, stage reached, feedback, the user's read, in their words, condensed. Write "—" for anything not answered. Never invent a reason.
 
 ### `status` / `summary`
 List open rows (`found`, `drafting`, `planned`, `applied`, `interview`) ordered by deadline, then counts per status.
