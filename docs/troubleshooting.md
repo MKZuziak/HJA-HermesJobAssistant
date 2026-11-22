@@ -13,4 +13,6 @@
 | No scheduled reports arrive | Jobs missing, or no home channel. | `make status`; set `TELEGRAM_HOME_CHANNEL`; `make configure && make jobs`. |
 | `Script path must be relative to …/scripts/` | A cron script outside Hermes' scripts folder. | `make install && make jobs`. |
 | Browser tools fail on some pages | Not enough shared memory for Chromium. | `shm_size: 1g` is set in `compose.yml`; recreate with `make down && make up`. |
+| The bot says your materials are missing or "templates unfilled" | Your files are in the repo's `templates/` (never read), or the `materials`/`out` folder was deleted and recreated while Hermes ran. | Put your files in `~/scout/materials/`, then `make down && make up` and `make profile`. Restore the templates with `git checkout -- templates && git clean -fd templates`. |
+| Edits to `templates/` have no effect | `make init` copies templates once and never overwrites. | Edit `~/scout/materials/` instead. |
 | Profile skill has the wrong rubric | The agent paraphrased instead of copying. | Tell the bot what is wrong and ask it to update scout-profile, or edit `~/.hermes/skills/hja/scout-profile/SKILL.md`. |

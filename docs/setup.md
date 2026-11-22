@@ -20,16 +20,23 @@ make init
 
 ## 2. Your materials
 
-In `~/scout/materials/`:
+The agent reads **only `~/scout/materials/`**. The repo's `templates/` folder is just the starting point `make init` copies from, once; editing it afterwards changes nothing, and anything you put there can be committed and published. Keep your real files in `~/scout/materials/`:
 
 - Your CV: `.tex` and/or `.pdf`. Subfolders are fine.
 - Past applications or cover letters (optional, recommended): the profile learns your writing style from them.
 - `criteria.md`: who you are, topics, roles, location priority, hard exclusions, scoring rubric and thresholds.
 - `sources.md`: the sites and search queries to check each run.
+- `guides/` (optional): CV and application guides the career advisor should follow.
 
-## 3. Secrets
+Copying from another machine: `rsync -a ~/scout/materials/ <server>:~/scout/materials/`.
+
+You can add and edit files here at any time, even while Hermes runs. Don't delete and recreate the `materials` or `out` folders themselves while it runs: the container stays attached to the old folder and sees it as empty until `make down && make up`.
+
+## 3. Secrets and timezone
 
 Fill in `secrets.env`. `TELEGRAM_HOME_CHANNEL` is where reports go; for a private chat with your bot it equals your user ID.
+
+In `.env`, set `HJA_TIMEZONE` (e.g. `Europe/Rome`): the weekly brief runs Mondays at 08:00 in that zone.
 
 ## 4. Build, first-run wizard, start
 
@@ -65,9 +72,9 @@ which runs, in order:
 |---|---|
 | `make configure` | Writes `secrets.env` into Hermes' `.env` (update-in-place), sets search/extract backends, quiet Telegram output, cron behaviour, and disables terminal and code execution |
 | `make restart` | Loads the new settings |
-| `make install` | Installs `scout-tracker`, `fetch_alerts.py` and `SOUL.md` |
+| `make install` | Installs the `scout-tracker` and `career-advisor` skills, `fetch_alerts.py` and `SOUL.md` |
 | `make profile` | Has the agent build the `scout-profile` skill from your materials |
-| `make jobs` | Creates (or updates) the `scout` and `deadlines` jobs |
+| `make jobs` | Creates (or updates) the `scout`, `deadlines` and `brief` jobs |
 
 All of them are safe to re-run.
 

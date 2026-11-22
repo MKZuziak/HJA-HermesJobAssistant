@@ -6,10 +6,12 @@
 |---|---|
 | *(nothing)* | Every 12 h: new matches, highest score first, top matches (85+) under "Top matches — apply?". Silent if nothing new scores 60+. |
 | a job link, optionally with "track this" or "draft" | Opened, verified, scored and added to the tracker; drafts written if it scores 60+ or you say "draft". |
-| `apply <slug>` | Status "planned"; drafts checked; deadline reminders start (14, 7, 3 and 1 days before). |
+| `apply <slug>` | Status "planned"; drafts checked; CV tailoring notes written; deadline reminders start (14, 7, 3 and 1 days before). |
 | `skip <slug>` | Status "dropped"; never suggested again. |
 | `applied to X` · `interview at Y` · `rejected from Z` · `offer from W` | Status and date updated. |
 | `status` | Open applications by deadline, plus counts per status. |
+| `how am I doing?` · `what should I focus on?` | Career advisor: an honest review of your pipeline and where effort pays off. |
+| `review my CV for <slug>` | CV tailoring notes for that opening. |
 
 ## Files
 
@@ -18,7 +20,19 @@
 | `~/scout/out/applications.md` | The tracker: one row per opportunity, with status history in the notes. |
 | `~/scout/out/drafts/<slug>/cover_letter.md` | Draft cover letter. Edit it before use. |
 | `~/scout/out/drafts/<slug>/checklist.md` | Required documents and submission steps. |
+| `~/scout/out/drafts/<slug>/cv_notes.md` | How to tailor your CV for this opening: requirements, your evidence, gaps, what to reorder or cut. Your CV itself is never changed. |
+| `~/scout/out/briefs/<date>.md` | Weekly market briefs. |
 | `~/scout/out/seen.md` | Everything already assessed, so nothing is reported twice. |
+
+## Career advisor
+
+The `career-advisor` skill adds three things:
+
+- **Weekly market brief** (Mondays 08:00 in `HJA_TIMEZONE`; `make brief` for one now): 3–5 hiring and funding signals from the last 30 days, each with a source and date, what they mean for your profile, at most three actions for the week, and your pipeline at a glance.
+- **CV tailoring notes** whenever you say `apply <slug>`.
+- **Coaching on demand**: ask in Telegram. Answers are based on your tracker, profile and the latest brief, and separate evidence ("source, date") from the advisor's own judgement.
+
+Put CV or application guides you trust in `~/scout/materials/guides/`; the advisor follows them over its general advice.
 
 ## Teaching it
 

@@ -41,5 +41,10 @@ upsert scout "every 12h" "$PROMPTS/scout.md" "$ALERT_SCRIPT" \
 upsert deadlines "every 24h" "$PROMPTS/deadlines.md" "" \
   --skill scout-tracker --deliver telegram --catch-up on
 
+# Weekly market brief: Mondays 08:00 in HJA_TIMEZONE (set in .env; default UTC).
+upsert brief "0 8 * * 1" "$PROMPTS/market-brief.md" "" \
+  --skill career-advisor --skill scout-profile --skill scout-tracker \
+  --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
+
 echo
 hermes cron list
