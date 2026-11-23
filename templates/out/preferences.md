@@ -14,5 +14,9 @@ Exploration: a few years of fixed-term moves to find out where I want to live, w
 - Location order: <first>, <second>, <third>, …
 - <anything else that currently matters, e.g. "prefer research freedom over salary for the next move">
 
+## Mailbox subscriptions
+<!-- The mailbox skill accepts confirmation emails only for sites listed here. -->
+- Scout mailbox address: <your-scout-address@example.com>
+
 ## Reflections
 <!-- The strategist appends lines here: - YYYY-MM-DD | place or role | impression -->

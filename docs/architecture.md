@@ -15,6 +15,7 @@ flowchart LR
         CC["Claude Code CLI"]
         BR["Headless Chromium"]
         FA["fetch_alerts.py"]
+        MS["mail_sync.py"]
     end
 
     AGT -- "make install / make jobs" --> HD
@@ -26,7 +27,8 @@ flowchart LR
     AG -- search --> BRAVE["Brave Search API"]
     AG -- read pages --> TAV["Tavily API"]
     AG --> BR
-    MAIL[("Alert mailbox<br/>IMAP")] --> FA --> AG
+    MAIL[("Scout mailbox<br/>IMAP only")] --> FA --> AG
+    AG -- "outbox files" --> MS -- "drafts (IMAP APPEND)" --> MAIL
     GW <--> TG["Telegram"]
 ```
 
@@ -36,12 +38,13 @@ flowchart LR
 |---|---|
 | **Gateway** | Hermes' long-running service, supervised by s6 inside the container: Telegram connection, cron scheduler, web dashboard. |
 | **Agent** | Does the work. Each turn it follows `SOUL.md` (standing rules), the attached skills and the prompt. |
-| **Skills** | `scout-tracker`, `career-advisor`, `strategist`, `research-radar`, `calls-radar` and `mobility-intel` ship in `agent/skills/` and are installed as-is. `scout-profile` is generated from your own materials by `make profile`, because it is different for every user. |
+| **Skills** | `scout-tracker`, `career-advisor`, `strategist`, `research-radar`, `calls-radar`, `mobility-intel` and `mailbox` ship in `agent/skills/` and are installed as-is. `scout-profile` is generated from your own materials by `make profile`, because it is different for every user. |
 | **Cron jobs** | See *Schedule* below. Created and updated by name by `agent/scripts/jobs.sh`. Each run starts fresh; it knows only its prompt and its skills. Missed runs are caught up once when the container returns (`--catch-up on`). |
 | **Claude Code CLI** | Baked into the image. With the *Claude Subscription DirectSDK* plugin, model calls go through it, so runs use your Claude subscription rather than a separate API key. Any other provider works too: see [models.md](models.md). |
 | **Brave / Tavily** | Web search and page reading (`web.search_backend`, `web.extract_backend`). |
 | **Chromium** | Bundled with Hermes, for JavaScript-heavy pages such as Workday job portals. |
 | **`research_radar.py`** | Runs before each radar job: collects new arXiv papers for your queries and new works citing you from OpenAlex (free API key), and remembers what it already reported. |
+| **`mail_sync.py`** | Script-only job every 5 min: turns `out/outbox/*.md` files written by the agent into drafts in the mailbox's Drafts folder (IMAP `APPEND`). Attachments only from materials or drafts. |
 | **`fetch_alerts.py`** | Optional. Before each scout run it prints unread job-alert emails from a dedicated mailbox; Hermes injects that output into the run's prompt. |
 
 ## Schedule
@@ -57,6 +60,7 @@ Wall-clock times are in `HJA_TIMEZONE`.
 | `brief` | Mondays 08:00 | career-advisor, scout-profile, scout-tracker | weekly market brief |
 | `strategy` | 1st of the month, 09:00 | strategist, scout-profile, scout-tracker, career-advisor | three-month plan |
 | `mobility` | 15th of the month, 09:00 | mobility-intel, scout-profile | visa and residency check per country |
+| `mail-sync` | every 5 min (only with a mailbox) | none (script only) | outbox → mailbox drafts |
 
 ## Data layout
 
@@ -88,6 +92,7 @@ Hermes runs as **your** UID (`HERMES_UID`/`HERMES_GID`, set by `make init`), so 
 | Terminal and code-execution toolsets disabled on `cli`, `telegram` and `cron` (`make configure`) | Arbitrary command execution, e.g. after a prompt injection |
 | Web pages, emails, abstracts and script output explicitly treated as data | Prompt injection through listings or alert emails |
 | Materials and repo assets mounted read-only | The agent altering your CV, criteria, prompts or its own rules |
+| No SMTP anywhere: the mailbox is IMAP-only, drafts are appended, nothing can send (a unit test checks no script imports `smtplib`) | The agent emailing anyone, e.g. after an injected instruction |
 | Mailbox read by a script, not by the agent; `SCOUT_IMAP_*` instead of `EMAIL_*` | Emails becoming instructions via Hermes' email gateway |
 | `TELEGRAM_ALLOWED_USERS` | Strangers using your bot |
 | Dashboard bound to `127.0.0.1`, password-protected | Network access to the control plane |

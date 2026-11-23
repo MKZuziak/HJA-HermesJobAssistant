@@ -19,7 +19,7 @@ done
 
 # Cron scripts must live in Hermes' own scripts folder (absolute paths are refused).
 mkdir -p "$DATA/scripts"
-for script in fetch_alerts.py research_radar.py; do
+for script in hja_mail.py fetch_alerts.py mail_sync.py research_radar.py; do
   cp "$SRC/scripts/$script" "$DATA/scripts/$script"
   echo "script     scripts/$script"
 done

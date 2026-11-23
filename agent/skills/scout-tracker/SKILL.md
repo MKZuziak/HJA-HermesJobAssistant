@@ -1,14 +1,14 @@
 ---
 name: scout-tracker
 description: "Track job and grant applications in a markdown table: add links, draft materials, update statuses, summarise."
-version: 1.2.0
+version: 1.3.0
 author: Hermes Job Assistant
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [Jobs, Applications, Tracker, Career]
-    related_skills: [scout-profile, career-advisor, strategist]
+    related_skills: [scout-profile, career-advisor, strategist, mailbox]
 ---
 
 # Scout Tracker
@@ -44,7 +44,7 @@ Keeps the user's job and grant search in one table: `/opt/data/scout/application
 6. Reply with the row and the drafts folder.
 
 ### `apply <slug>` / `skip <slug>`
-- `apply`: set status `planned`; make sure drafts exist (create them if not); confirm the deadline from the listing; then write `cv_notes.md` for this opening following the career-advisor skill's *CV tailoring* procedure.
+- `apply`: set status `planned`; make sure drafts exist (create them if not); confirm the deadline from the listing; then write `cv_notes.md` for this opening following the career-advisor skill's *CV tailoring* procedure. If the listing says to apply **by email**, also prepare the application email as a draft with the mailbox skill (to the address on the listing, CV attached) and say so.
 - `skip`: set status `dropped`.
 
 ### Progress reports

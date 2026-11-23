@@ -36,7 +36,7 @@ upsert() {
 }
 
 upsert scout "every 12h" "$PROMPTS/scout.md" "$ALERT_SCRIPT" \
-  --skill scout-profile --skill scout-tracker --deliver telegram --catch-up on
+  --skill scout-profile --skill scout-tracker --skill mailbox --deliver telegram --catch-up on
 
 upsert deadlines "every 24h" "$PROMPTS/deadlines.md" "" \
   --skill scout-tracker --deliver telegram --catch-up on
@@ -60,6 +60,21 @@ upsert calls "0 8 * * 3" "$PROMPTS/calls.md" "" \
 upsert mobility "0 9 15 * *" "$PROMPTS/mobility.md" "" \
   --skill mobility-intel --skill scout-profile \
   --timezone "${HJA_TIMEZONE:-UTC}" --deliver telegram --catch-up on
+
+# Mailbox drafts: every 5 min, a script (no agent, no tokens) turns outbox files into
+# drafts in the scout mailbox's Drafts folder. Only when a mailbox is configured.
+if [ -n "$ALERT_SCRIPT" ]; then
+  if out=$(hermes cron edit mail-sync --schedule "every 5m" --script mail_sync.py 2>&1); then
+    echo "updated  mail-sync (every 5m)"
+  elif printf '%s' "$out" | grep -q "Job not found"; then
+    hermes cron create "every 5m" --no-agent --script mail_sync.py \
+      --name mail-sync --deliver telegram >/dev/null
+    echo "created  mail-sync (every 5m)"
+  else
+    printf 'failed   mail-sync\n%s\n' "$out" >&2
+    exit 1
+  fi
+fi
 
 # Monthly three-month plan: 1st of each month, 09:00 in HJA_TIMEZONE.
 upsert strategy "0 9 1 * *" "$PROMPTS/strategy.md" "" \

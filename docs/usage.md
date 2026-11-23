@@ -17,6 +17,8 @@
 | `radar` · `who cites me?` · `which labs should I watch?` | Research radar: latest digest and the labs watchlist. |
 | `calls` · `short stays in <country>?` | Calls radar: visiting positions, short fellowships, schools, workshop calls, travel grants. |
 | `visa <country>` | Mobility: routes, requirements, your estimated standing, recent changes. |
+| `draft an email to … about …` | An email draft appears in the scout mailbox's Drafts folder within minutes; you review and send it. |
+| `subscribe the mailbox to <site> alerts for <topic>` | The agent sets up the alert in its browser and confirms the subscription email when it arrives. |
 
 ## Files
 
@@ -32,6 +34,7 @@
 | `~/scout/out/debriefs.md` | One line per outcome: stage reached, feedback, your read. |
 | `~/scout/out/radar/digests/<date>.md` · `radar/labs.md` | Daily radar digests; the watchlist of labs active in your area. |
 | `~/scout/out/mobility/<country>.md` | Visa and residency routes with official sources, your estimated standing, changes since the last check. |
+| `~/scout/out/outbox/` | Drafts waiting to be placed in the mailbox; `outbox/done/` once they are. |
 | `~/scout/out/seen.md` | Everything already assessed, so nothing is reported twice. |
 
 ## Career advisor
@@ -74,6 +77,14 @@ Every Wednesday (08:00) the calls radar checks the programme pages, venues and q
 ## Mobility intelligence
 
 On the 15th of each month the mobility check researches, from **official government sources only**, the work-permit, talent and residency routes for each country in your location order, and estimates your standing from the *Mobility facts* in `criteria.md` and your CV (for points systems, with the breakdown). It reports what changed since the last check and what would improve your standing. Estimates, not legal advice: confirm with the authority before acting.
+
+## Mailbox (drafts only)
+
+With a scout mailbox configured ([setup](setup.md#optional-scout-mailbox-drafts-only)):
+
+- **Incoming mail** is read at every scout run: alerts become candidates, confirmations for subscriptions you asked for are confirmed, and replies from people are summarised in the report (never answered by the agent). Processed mail is labelled `HJA/processed` and archived.
+- **Drafts**: ask for an email, or say `apply <slug>` for an opening that asks for applications by email. The agent writes the draft (with your CV attached when relevant), and within 5 minutes it is in the mailbox's Drafts folder with a Telegram note. Open it, edit, send.
+- **Nothing is ever sent by the agent.** There is no SMTP in this setup at all, so it isn't a rule the agent could break; the capability doesn't exist.
 
 ## Teaching it
 

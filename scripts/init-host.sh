@@ -20,7 +20,7 @@ say() { printf '  %-10s %s\n' "$1" "$2"; }
 
 echo "Folders"
 mkdir -p "$HERMES_DATA" "$SCOUT_MATERIALS" "$SCOUT_OUT/drafts" "$SCOUT_OUT/briefs" "$SCOUT_OUT/plans" \
-  "$SCOUT_OUT/radar/digests" "$SCOUT_OUT/mobility"
+  "$SCOUT_OUT/radar/digests" "$SCOUT_OUT/mobility" "$SCOUT_OUT/outbox/done"
 say "state" "$HERMES_DATA"
 say "materials" "$SCOUT_MATERIALS"
 say "output" "$SCOUT_OUT"

@@ -18,4 +18,6 @@
 | Radar digest notes "arXiv query skipped (429)" | arXiv rate-limited the server's IP for a while. | Nothing: the radar stops for the day and tries again tomorrow. If it persists, reduce the number of queries in `radar.json`. |
 | Radar says "Citation tracking off" | `OPENALEX_API_KEY` or `openalex_author_id` missing. | Add the key to `secrets.env` (`make configure && make restart`) and your author ID to `radar.json`. |
 | Radar says `NO_RADAR_CONFIG` | No `~/scout/materials/radar.json`. | `bash scripts/init-host.sh` copies the template; then edit it. |
+| `AUTHENTICATIONFAILED` from the mailbox scripts | Wrong password; for Gmail, a normal password instead of an app password, or 2-Step Verification off. | Create an app password, update `SCOUT_IMAP_PASSWORD` in `secrets.env`, `make configure`. |
+| A draft never appears in Gmail | The outbox file was rejected (bad header, disallowed attachment) or `mail-sync` isn't scheduled. | The Telegram note lists rejected files and why; `make status` should show `mail-sync`. Files still in `~/scout/out/outbox/` haven't been processed. |
 | Profile skill has the wrong rubric | The agent paraphrased instead of copying. | Tell the bot what is wrong and ask it to update scout-profile, or edit `~/.hermes/skills/hja/scout-profile/SKILL.md`. |

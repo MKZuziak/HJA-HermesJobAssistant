@@ -11,7 +11,8 @@ Built on [Hermes Agent](https://hermes-agent.nousresearch.com/) by Nous Research
 
 ## What it does
 
-- **Scouts** the sites and queries you list, plus optional job-alert emails sent to a dedicated mailbox.
+- **Scouts** the sites and queries you list, plus job-alert emails sent to an optional dedicated mailbox.
+- **Drafts emails** into that mailbox (application emails with your CV attached, replies you ask for) for you to review and send. It can't send: there is no SMTP in the project.
 - **Verifies** every opportunity on its real page; anything it can't confirm is marked `unconfirmed`.
 - **Scores** each one (0–100) with your rubric, and drops your hard exclusions.
 - **Drafts** a cover letter in your writing style, plus a submission checklist, for matches scoring 75+.
@@ -69,7 +70,7 @@ More: [docs/usage.md](docs/usage.md).
 
 ## Safety design
 
-- No outbound actions: no sending, submitting, sign-ups or payments. The agent holds no mail-sending credentials.
+- No outbound actions: no sending, submitting applications, account creation or payments; job-alert sign-ups only when you ask. Email is drafts-only: the mailbox is IMAP-only, with no SMTP anywhere.
 - Terminal and code execution are disabled; web pages and emails are treated as data, never as instructions.
 - Your materials and the agent's own prompts, skills and rules are mounted read-only.
 - Runs as your unprivileged user, confined by SELinux labels; the dashboard is local-only and password-protected; the bot answers only your Telegram ID.
@@ -87,8 +88,8 @@ The residual risks are covered in [docs/architecture.md](docs/architecture.md#se
 ├── agent/                    # mounted read-only into the container at /opt/hja
 │   ├── SOUL.md               # standing rules
 │   ├── prompts/              # one per job, plus the profile builder
-│   ├── skills/               # scout-tracker, career-advisor, strategist, research-radar, calls-radar, mobility-intel
-│   └── scripts/              # apply_config.py, install.sh, jobs.sh, fetch_alerts.py, research_radar.py
+│   ├── skills/               # scout-tracker, career-advisor, strategist, research-radar, calls-radar, mobility-intel, mailbox
+│   └── scripts/              # setup helpers; fetch_alerts.py, mail_sync.py, hja_mail.py, research_radar.py
 ├── scripts/init-host.sh      # host setup (make init)
 ├── templates/                # starting files copied once by make init (never put real data here)
 ├── tests/                    # offline unit tests (python -m unittest)
