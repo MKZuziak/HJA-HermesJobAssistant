@@ -1,33 +1,26 @@
-"""Print unread job-alert emails for the scout run.
+"""Print unread emails from the scout mailbox for the scout run, then file them.
 
 Installed into Hermes' scripts folder by install.sh and attached to the scout job
 (cron --script), so its output is injected into the agent's prompt each run.
 
-Reads SCOUT_IMAP_* from Hermes' .env, prints each unread email as plain text and
-marks it read. It never sends mail, and the agent never sees the mailbox password.
+Reads SCOUT_IMAP_* from Hermes' .env, prints each unread email as plain text, then
+labels it "HJA/processed" and archives it, so the inbox only ever holds mail that
+has not been looked at. It never sends mail, and the agent never sees the password.
 """
 from __future__ import annotations
 
 import email
-import imaplib
-import os
 import re
+import sys
 from email.header import decode_header, make_header
 from email.message import Message
+from pathlib import Path
 
-ENV_FILE = os.path.join(os.environ.get("HERMES_HOME", "/opt/data"), ".env")
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # hja_mail.py sits next to this script
+from hja_mail import archive_processed, connect, load_env, mailbox_settings
+
 MAX_EMAILS = 30
 MAX_CHARS = 5000
-
-
-def load_env(path: str) -> dict[str, str]:
-    env: dict[str, str] = {}
-    with open(path, encoding="utf-8") as handle:
-        for line in handle:
-            if "=" in line and not line.lstrip().startswith("#"):
-                key, value = line.strip().split("=", 1)
-                env[key.strip()] = value.strip().strip('"').strip("'")
-    return env
 
 
 def body_text(msg: Message) -> str:
@@ -49,26 +42,24 @@ def body_text(msg: Message) -> str:
 
 
 def main() -> None:
-    env = load_env(ENV_FILE)
-    host, user, password = (env.get(k, "") for k in
-                            ("SCOUT_IMAP_HOST", "SCOUT_IMAP_USER", "SCOUT_IMAP_PASSWORD"))
-    if not (host and user and password):
+    settings = mailbox_settings(load_env())
+    if not settings:
         print("NO_MAILBOX_CONFIGURED")
         return
 
-    box = imaplib.IMAP4_SSL(host)
+    box = connect(*settings)
     try:
-        box.login(user, password)
         box.select("INBOX")
-        ids = box.search(None, "UNSEEN")[1][0].split()[:MAX_EMAILS]
-        if not ids:
+        uids = box.uid("SEARCH", None, "UNSEEN")[1][0].split()[:MAX_EMAILS]
+        if not uids:
             print("NO_NEW_ALERTS")
-        for msg_id in ids:
-            raw = box.fetch(msg_id, "(RFC822)")[1][0][1]  # fetching marks the email read
+        for uid in uids:
+            raw = box.uid("FETCH", uid, "(RFC822)")[1][0][1]  # fetching marks the email read
             msg = email.message_from_bytes(raw)
             subject = str(make_header(decode_header(msg.get("Subject", ""))))
-            print(f"=== ALERT EMAIL | From: {msg.get('From')} | Subject: {subject}")
+            print(f"=== EMAIL | From: {msg.get('From')} | Subject: {subject}")
             print(body_text(msg)[:MAX_CHARS], "\n")
+        archive_processed(box, uids)
     finally:
         box.logout()
 

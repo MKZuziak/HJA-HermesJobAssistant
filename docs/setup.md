@@ -94,12 +94,18 @@ All of them are safe to re-run.
    ```
 4. Open a few reported links and check the deadlines against the real pages.
 
-## Optional: alert mailbox
+## Optional: scout mailbox (drafts only)
 
-1. Create a dedicated mailbox with IMAP (e.g. Posteo, or Gmail with an app password). Subscribe it to saved-search alerts from EURAXESS, jobs.ac.uk, Academic Positions, Nature Careers and similar.
-2. Add `SCOUT_IMAP_HOST`, `SCOUT_IMAP_USER`, `SCOUT_IMAP_PASSWORD` to `secrets.env`.
-3. `make configure && make jobs`: the scout job picks up the collector automatically.
-4. Test the collector on its own:
+A **dedicated** mailbox (never your personal one) that receives job alerts and holds email drafts the agent writes for you. Access is IMAP only: the agent can read, file and draft, and **nothing in this setup can send mail**.
+
+1. Create the account. For Gmail: turn on 2-Step Verification, then create an app password at <https://myaccount.google.com/apppasswords>.
+2. In `secrets.env`: `SCOUT_IMAP_HOST=imap.gmail.com` (Posteo: `posteo.de`), `SCOUT_IMAP_USER=<address>`, `SCOUT_IMAP_PASSWORD=<app password>`.
+3. `make configure && make restart && make install && make jobs`. This attaches the collector to the scout job and adds the `mail-sync` job (every 5 min, script only, no tokens).
+4. Put the address in `~/scout/out/preferences.md` under *Mailbox subscriptions*.
+5. Test:
    ```sh
-   docker exec -u hermes hermes python3 /opt/data/scripts/fetch_alerts.py
+   docker exec -u hermes hermes python3 /opt/data/scripts/fetch_alerts.py   # NO_NEW_ALERTS = login works
    ```
+6. Subscribe it to job alerts, by hand or by asking the bot: "subscribe the mailbox to EURAXESS alerts for federated learning postdocs".
+
+Don't use the dashboard's *Configure Email* form for this mailbox: that is Hermes' email **chat** gateway, which treats incoming mail as instructions and can send.
